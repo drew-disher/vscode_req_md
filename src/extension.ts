@@ -18,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('reqmdcaller.req_md', () => {
+	let disposable = vscode.commands.registerCommand('reqmdcaller.req_md', () => {``
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
 
@@ -36,6 +36,11 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 			})
 		}
+
+		// Note to self: you can use the third parameter of json stringify to add whitespace to 'prettify' the json output
+		//JSON.stringify({ a:1, b:2, c:3 }, null, 4)
+
+		
 
 		// GETTING CURSOR SELECTION
 		// let editor = vscode.window.activeTextEditor;
