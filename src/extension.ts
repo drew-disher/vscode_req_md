@@ -2,9 +2,10 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as child from 'child_process';
+import * as fs from 'fs'
 
 const REQ_MD_PATH = 'C:/dev/req_md/target/debug/req_md.exe'
-const MARKDOWN_PATH = '/dev/req_md/target/debug/samples/get-google.md'
+const OUTPUT_PATH = 'C:/ws/tmp.txt'
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -21,16 +22,24 @@ export function activate(context: vscode.ExtensionContext) {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
 
-        const res = child.execFileSync(REQ_MD_PATH, [MARKDOWN_PATH]);
+		let currentlyOpenTabFilePath = vscode.window.activeTextEditor?.document.uri.path.slice(3);
 
-		let editor = vscode.window.activeTextEditor;
+		if (typeof currentlyOpenTabFilePath === 'string') {
+			const res = child.execFileSync(REQ_MD_PATH, [currentlyOpenTabFilePath]);
+			console.log(res.toString('utf-8'))
+			fs.writeFile(OUTPUT_PATH, res.toString('utf-8'), (err)=>{
+				if (err) {
+					throw err;
+				} else {
+					vscode.workspace.openTextDocument({content: res.toString()})
+					vscode.window.showInformationMessage('Response opened in new tab');
+				}
+			})
+		}
 
-		let selection = editor?.document.offsetAt(editor.selection.active)
-
-		vscode.window.showInformationMessage(
-		'Cursor Selection: ' + selection +'\n'
-		+ 'resposne: ' + res
-		);
+		// GETTING CURSOR SELECTION
+		// let editor = vscode.window.activeTextEditor;
+		// let selection = editor?.document.offsetAt(editor.selection.active)
 	});
 
 	context.subscriptions.push(disposable);
